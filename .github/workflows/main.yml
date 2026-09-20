@@ -23,7 +23,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - run: |
-            echo "Linting — I run at the same time as test, not after it."
+            echo "Linting — I run at the same time as tests, not after it."
             sleep 4
             exit 1
   deploy:
