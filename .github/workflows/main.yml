@@ -1,0 +1,48 @@
+name: learn_dees_in_workflow
+
+on: workflow_dispatch
+
+jobs:
+  build1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: |
+          echo "Building the app..."
+          sleep 10
+  tests:
+      needs: build1
+      runs-on: ubuntu-latest
+      steps:
+        - run: |
+            echo "Testing — build already finished before I started."
+            sleep 10
+
+  lint:
+      needs: build1
+      runs-on: ubuntu-latest
+      steps:
+        - run: |
+            echo "Linting — I run at the same time as test, not after it."
+            sleep 4
+            exit 1
+  deploy:
+    needs: [tests, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: show what I actually waited for from the lint and test
+        run: |
+          echo "Deploying."
+          # `needs.<job>.result` is one of: success, failure, cancelled, skipped
+          echo "test result: ${{ needs.tests.result }} "
+          echo "lint result: ${{ needs.lint.result }} "
+          echo "lint result: ${{ needs.tests.outputs }} "
+
+
+
+      - name: Dump the entire context of the needs for understanding purposes
+        env:
+          NEEDS_DATA= ${{ toJson(needs) }}
+        run: echo "$NEEDS_DATA"
+
+          
